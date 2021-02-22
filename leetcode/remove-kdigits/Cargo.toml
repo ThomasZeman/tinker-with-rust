@@ -1,0 +1,7 @@
+[package]
+name = "remove-kdigits"
+version = "0.1.0"
+authors = ["Thomas Zeman"]
+edition = "2018"
+
+
