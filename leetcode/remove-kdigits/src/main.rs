@@ -1,6 +1,6 @@
 // Thoughts:
 // - After removing any k digits, all strings will have the same length (excluding special case of leading zeros)
-// - Rather remove higher digits than lower digits to achieve small numbers, so start scanning from higher to lower digits
+// - Start scanning from higher to lower digits
 //
 // Example:
 // 1432219, k=3 -> 1219
@@ -20,25 +20,26 @@
 //  **** 
 // 10,      k=2 -> 0
 //
-// Add digit by digit, if current digit is smaller then previous, remove previous until previous is no longer smaller
+// Add digit by digit until digit is found which is smaller than n previous digits. Then remove previous ->
+// Add digit by digit, if current digit is smaller then previous, remove previous until current is no longer smaller than previous
 
 pub fn remove_kdigits_impl(num: Vec<u32>, mut k: i32) -> Option<Vec<u32>> {
     // According to description, if all digits can be removed return 0
     if num.len() == k as usize {
         return Some(vec![0]);
     }
-    let mut stack: Vec<u32> = Vec::new();
-    for item in num {
+    let mut result = Vec::new();
+    for current_digit in num {
         // While previous digit is bigger than current digit remove previous digit
-        while stack.len() != 0 && stack[stack.len() - 1] > item && k != 0 {
-            stack.pop();
-            println!("< {} {:?}", item, stack);
+        while result.len() != 0 && result[result.len() - 1] > current_digit && k != 0 {
+            result.pop();
+            println!("< {} {:?}", current_digit, result);
             k-=1;
         }
         // Don't add leading zeros
-        if item != 0 || stack.len() != 0 {
-            stack.push(item);
-            println!("> {} {:?}", item, stack);
+        if current_digit != 0 || result.len() != 0 {
+            result.push(current_digit);
+            println!("> {} {:?}", current_digit, result);
         } else {
             println!("i 0");
         }
@@ -46,12 +47,9 @@ pub fn remove_kdigits_impl(num: Vec<u32>, mut k: i32) -> Option<Vec<u32>> {
     // If k is not zero, trailing digits need to be removed
     while k > 0 {
         k-=1;
-        stack.pop();
+        result.pop();
     }
-    if stack.len() == 0 {
-        stack.push(0);
-    }
-    return Some(stack);
+    return Some(result);
 }
 
 pub fn remove_kdigits(num: String, k: i32) -> String {
