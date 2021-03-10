@@ -1,4 +1,5 @@
 use std::fmt::{Display, Formatter, Result};
+use std::ops::Add;
 
 #[derive(Debug)]
 struct Alpha {
@@ -33,6 +34,22 @@ impl Display for Beta {
         // This value can be passed to the macros within std::fmt for performing useful redirection.
         // format_args!, unlike its derived macros, avoids heap allocations.
         f.write_fmt(format_args!("{},{},{}", self.a, self.b, self.c))
+    }
+}
+
+impl std::ops::Add for Celsius {
+    type Output = f32;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        return self.0 + rhs.0;
+    }
+}
+
+impl std::ops::Add<Fahrenheit> for Celsius {
+    type Output = f32;
+
+    fn add(self, rhs: Fahrenheit) -> Self::Output {
+        return self.0 + (rhs.0 - 32.0) * (5.0 / 9.0);
     }
 }
 
@@ -73,6 +90,13 @@ fn tuple_structs() -> Noop {
     let temp1 = Celsius(10.0);
     let temp2 = Fahrenheit(32.4);
     println!("{}, {}", temp1.0, temp2.0);
+
+    // Standard add operator for tuple struct
+    let temp3 = Celsius(100.0) + Celsius(12.0);
+    println!("{}C", temp3);
+
+    // Use add operator to convert to another type
+    println!("{}C", Celsius(0.0) + Fahrenheit(32.0));
 
     return Noop();
 }
